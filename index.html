@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>이미지 기반 미래 시뮬레이터 (좌우 비교)</title>
+<style>
+  body { margin:0; font-family: Arial, sans-serif; background:#111; color:#eee; }
+  header { padding:12px; background:#222; text-align:center; }
+  #wrap { display:grid; grid-template-columns:300px 1fr; gap:12px; padding:12px; }
+  #controls { background:#1b1b1b; padding:12px; border-radius:8px; }
+  .ctrl { margin-bottom:14px; }
+  .ctrl label { display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; }
+  input[type=range]{ width:100%; }
+  #panels { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .panel { background:#1a1a1a; border-radius:8px; overflow:hidden; }
+  .panel header { padding:6px 10px; background:#333; font-size:14px; }
+  .canvas-wrap { height:300px; display:flex; align-items:center; justify-content:center; }
+  .canvas-wrap img { max-height:100%; max-width:100%; object-fit:contain; }
+</style>
+</head>
+<body>
+<header><h1>이미지 기반 미래 시뮬레이터</h1></header>
+<div id="wrap">
+  <aside id="controls">
+    <div class="ctrl">
+      <label>연도 <span id="yearLabel">2025</span></label>
+      <input type="range" id="year" min="1900" max="2100" step="10" value="2025">
+    </div>
+    <div class="ctrl">
+      <label>로봇 비율 (%) <span id="robotLabel">50</span></label>
+      <input type="range" id="robot" min="0" max="100" step="10" value="50">
+    </div>
+    <div class="ctrl">
+      <label>환경 지수 <span id="envLabel">50</span></label>
+      <input type="range" id="env" min="0" max="100" step="10" value="50">
+    </div>
+  </aside>
+  <main id="panels">
+    <div class="panel">
+      <header>사용자 선택 시나리오</header>
+      <div class="canvas-wrap"><img id="userImg" src="" alt="사용자 이미지"></div>
+    </div>
+    <div class="panel">
+      <header>현재 기준선 (Baseline)</header>
+      <div class="canvas-wrap"><img id="baseImg" src="" alt="기준선 이미지"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const userImg = document.getElementById("userImg");
+const baseImg = document.getElementById("baseImg");
+
+function update(){
+  const year = document.getElementById("year").value;
+  const robot = document.getElementById("robot").value;
+  const env = document.getElementById("env").value;
+  document.getElementById("yearLabel").textContent = year;
+  document.getElementById("robotLabel").textContent = robot;
+  document.getElementById("envLabel").textContent = env;
+  
+  // 간단한 이미지 매핑 예시
+  let userSrc = "";
+  if(robot < 30 && env > 70){ userSrc = "good_env.png"; }
+  else if(robot > 70 && env < 30){ userSrc = "robot_city.png"; }
+  else { userSrc = "mixed.png"; }
+  userImg.src = userSrc;
+  
+  // 기준선은 항상 현재 (2025 기준)
+  baseImg.src = "baseline.png";
+}
+
+document.querySelectorAll("input").forEach(inp=>inp.addEventListener("input",update));
+update();
+</script>
+</body>
+</html>
